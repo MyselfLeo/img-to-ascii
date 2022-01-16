@@ -1,8 +1,7 @@
 use image::GenericImageView;
 use std::env;
 
-
-const SYMBOLS: [char; 5] = [' ', '░', '▒', '▓', '█'];
+const SYMBOLS: [char; 10] = [' ', '.', ':', ';', '+', 'o', 'O', '&', '@', '█'];
 const MAX_WIDTH: u32 = 100;
 
 
@@ -17,6 +16,8 @@ struct AsciiImage {
 impl AsciiImage {
     fn print(&self) {
         for y in 0..self.dimensions.1 {
+
+            // Only drawing half of the lines to display undistorded img, as terminal characters have a 1/2 ratio
             if y % 2 == 0 {
                 for x in 0..self.dimensions.0 {
                     print!("{}", self.characters[(x * self.dimensions.1 + y) as usize]);
