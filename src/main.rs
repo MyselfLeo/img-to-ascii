@@ -1,5 +1,5 @@
 use image::GenericImageView;
-use std::env;
+use clap::Parser;
 
 const SYMBOLS: [char; 10] = [' ', '.', ':', ';', '+', 'o', 'O', '&', '@', '█'];
 const MAX_WIDTH: u32 = 100;
@@ -36,7 +36,6 @@ fn get_output_dimensions(img_dimensions: (u32, u32)) -> (u32, u32) {
 
     if img_dimensions.0 > MAX_WIDTH {
         let ratio = MAX_WIDTH as f64 / img_dimensions.0 as f64; // an image of 1000w converted to 100w => ratio = 0.10
-        println!("[INFO] Ratio <1: {}", ratio);
         return (MAX_WIDTH, (img_dimensions.1 as f64 * ratio) as u32);
     }
     else {
@@ -52,11 +51,9 @@ fn convert_file(filepath: &String) -> AsciiImage {
     // Load image
     let mut image = image::open(filepath).expect("[ERROR] Unable to load the image.");
     let dimensions = image.dimensions();
-    println!("[INFO] Image dimensions: {:?}", dimensions);
 
     // Compute output dimensions
     let output_dimensions = get_output_dimensions(dimensions);
-    println!("[INFO] Output dimensions will be: {:?}", output_dimensions);
 
     // Create AsciiImage struct
     let mut ascii_image = AsciiImage{
@@ -67,7 +64,6 @@ fn convert_file(filepath: &String) -> AsciiImage {
     // Convert the image to greyscale
     image = image.grayscale();
     let ratio = dimensions.0 / output_dimensions.0; // an image of 1000w converted to 100w => ratio = 10
-    println!("[INFO] Ratio >1: {}", ratio);
 
     for x in 0..output_dimensions.0 {
         for y in 0..output_dimensions.1 {
@@ -84,16 +80,21 @@ fn convert_file(filepath: &String) -> AsciiImage {
 
 
 
+#[derive(Parser)]
+struct Cli {
+    pattern: String,
+    
+}
+
+
+
 
 
 fn main() {
-    // Get file name from args
-    let args: Vec<String> = env::args().collect();
-    let mut filepath: &String = &String::new();
-    match args.len() {
-        1 => println!("[ERROR]] Please enter a valid path to the image."),
-        _ => {filepath = &args[1];}
-    }
+    // Get arguments from command line
+
+
+
 
     // Convert file
     let ascii_image = convert_file(filepath);
