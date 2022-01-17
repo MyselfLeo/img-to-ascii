@@ -2,8 +2,14 @@
 name = "img-to-ascii"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["myselfleo <myselfleo@outlook.fr>"]
+license = "Apache-2.0"
+description = "A very small ascii art generator"
+readme = "README.md"
+homepage = "https://github.com/MyselfLeo/img-to-ascii"
+repository = "https://github.com/MyselfLeo/img-to-ascii"
+keywords = ["cli", "ascii"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 image = "0.23.14"
