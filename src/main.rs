@@ -51,14 +51,11 @@ impl AsciiImage {
 
 
 
-
 fn get_output_dimensions(img_dimensions: (u32, u32), width: u32) -> (u32, u32) {
     // Return the dimensions of the outputed ascii image
     let ratio = img_dimensions.0 as f32 / img_dimensions.1 as f32;
     (width, (width as f32 / ratio) as u32)
 }
-
-
 
 
 
@@ -109,11 +106,10 @@ struct Args {
     #[clap(short, long)]
     output: Option<String>,
 
-    /// Specifies the width of the outputted image
+    /// Specifies the width of the outputted image. Default is 100
     #[clap(short, long)]
     width: Option<u32>,
 }
-
 
 
 
