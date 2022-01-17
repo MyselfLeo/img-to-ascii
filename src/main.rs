@@ -1,8 +1,10 @@
 use image::GenericImageView;
 use clap::Parser;
+use std::fs::File;
+use std::io::Write;
 
 const SYMBOLS: [char; 10] = [' ', '.', ':', ';', '+', 'o', 'O', '&', '@', '█'];
-const MAX_WIDTH: u32 = 100;
+const DEFAULT_MAX_WIDTH: u32 = 100;
 
 
 
@@ -14,10 +16,10 @@ struct AsciiImage {
 }
 
 impl AsciiImage {
+    /// Prints the ascii image to the console
     fn print(&self) {
         for y in 0..self.dimensions.1 {
-
-            // Only drawing half of the lines to display undistorded img, as terminal characters have a 1/2 ratio
+            // Only drawing half of the lines to display undistorded img
             if y % 2 == 0 {
                 for x in 0..self.dimensions.0 {
                     print!("{}", self.characters[(x * self.dimensions.1 + y) as usize]);
@@ -26,34 +28,50 @@ impl AsciiImage {
             }
         }
     }
+
+
+    /// Return a String of the ascii image
+    fn as_string(&self) -> String {
+
+        // Generate the string
+        let mut string = String::new();
+        for y in 0..self.dimensions.1 {
+            // Only writing half of the lines to display undistorded img
+            if y % 2 == 0 {
+                for x in 0..self.dimensions.0 {
+                    string.push(self.characters[(x * self.dimensions.1 + y) as usize]);
+                }
+                string.push('\n');
+            }
+        }
+        
+        string
+    }
 }
 
 
 
 
-fn get_output_dimensions(img_dimensions: (u32, u32)) -> (u32, u32) {
-    // Return the dimensions of the outputed ascii image, as its width cannot be greater than MAX_WIDTH.
-
-    if img_dimensions.0 > MAX_WIDTH {
-        let ratio = MAX_WIDTH as f64 / img_dimensions.0 as f64; // an image of 1000w converted to 100w => ratio = 0.10
-        return (MAX_WIDTH, (img_dimensions.1 as f64 * ratio) as u32);
-    }
-    else {
-        return img_dimensions;
-    }
+fn get_output_dimensions(img_dimensions: (u32, u32), width: u32) -> (u32, u32) {
+    // Return the dimensions of the outputed ascii image
+    let ratio = img_dimensions.0 as f32 / img_dimensions.1 as f32;
+    (width, (width as f32 / ratio) as u32)
 }
 
 
 
 
 
-fn convert_file(filepath: &String) -> AsciiImage {
+fn convert_file(filepath: &String, width: Option<u32>) -> AsciiImage {
+    // Select the correct width for the outputed image
+    let width = width.unwrap_or(DEFAULT_MAX_WIDTH);
+
     // Load image
     let mut image = image::open(filepath).expect("[ERROR] Unable to load the image.");
     let dimensions = image.dimensions();
 
     // Compute output dimensions
-    let output_dimensions = get_output_dimensions(dimensions);
+    let output_dimensions = get_output_dimensions(dimensions, width);
 
     // Create AsciiImage struct
     let mut ascii_image = AsciiImage{
@@ -75,29 +93,44 @@ fn convert_file(filepath: &String) -> AsciiImage {
         }
     }
 
-    return ascii_image;
+    ascii_image
 }
 
 
 
+// Args parsing using clap
 #[derive(Parser)]
-struct Cli {
-    pattern: String,
-    
-}
+#[clap(author = "myselfleo", version = "0.1.0", about = "A simple image to ascii converter")]
+struct Args {
+    /// The path to the image to convert
+    filepath: String,
 
+    /// Specifies a file to write the output to, instead of printing it to the console
+    #[clap(short, long)]
+    output: Option<String>,
+
+    /// Specifies the width of the outputted image
+    #[clap(short, long)]
+    width: Option<u32>,
+}
 
 
 
 
 fn main() {
     // Get arguments from command line
-
-
-
+    let args = Args::parse();
 
     // Convert file
-    let ascii_image = convert_file(filepath);
+    let ascii_image = convert_file(&args.filepath, args.width);
 
-    ascii_image.print();
+    if args.output.is_some() {
+        // Write to file
+        let mut file = File::create(args.output.unwrap()).expect("[ERROR] Unable to create the output file.");
+        file.write(ascii_image.as_string().as_bytes()).expect("[ERROR] Unable to write to the output file.");
+    }
+    else {
+        // Print to console
+        ascii_image.print();
+    }
 }
