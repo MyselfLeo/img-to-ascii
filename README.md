@@ -12,7 +12,7 @@ A very small ascii art generator.
 The best way to install this software is via cargo.
 
 ```
-    $ cargo install img-to-ascii
+$ cargo install img-to-ascii
 ```
 
 
