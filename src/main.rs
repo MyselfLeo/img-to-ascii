@@ -9,13 +9,14 @@ const DEFAULT_MAX_WIDTH: u32 = 100;
 
 
 
-
+/// Struct to hold and work with the ascii image
 struct AsciiImage {
     dimensions: (u32, u32),
     characters: Vec<char>
 }
 
 impl AsciiImage {
+
     /// Prints the ascii image to the console
     fn print(&self) {
         for y in 0..self.dimensions.1 {
@@ -28,7 +29,6 @@ impl AsciiImage {
             }
         }
     }
-
 
     /// Return a String of the ascii image
     fn as_string(&self) -> String {
@@ -51,14 +51,17 @@ impl AsciiImage {
 
 
 
+
+/// Return the dimensions of the outputed ascii image
 fn get_output_dimensions(img_dimensions: (u32, u32), width: u32) -> (u32, u32) {
-    // Return the dimensions of the outputed ascii image
     let ratio = img_dimensions.0 as f32 / img_dimensions.1 as f32;
     (width, (width as f32 / ratio) as u32)
 }
 
 
 
+
+/// Converts a given image to ascii
 fn convert_file(filepath: &String, width: Option<u32>) -> AsciiImage {
     // Select the correct width for the outputed image
     let width = width.unwrap_or(DEFAULT_MAX_WIDTH);
@@ -95,6 +98,7 @@ fn convert_file(filepath: &String, width: Option<u32>) -> AsciiImage {
 
 
 
+
 // Args parsing using clap
 #[derive(Parser)]
 #[clap(author = "myselfleo", version = "0.1.0", about = "A simple image to ascii converter")]
@@ -110,6 +114,7 @@ struct Args {
     #[clap(short, long)]
     width: Option<u32>,
 }
+
 
 
 
