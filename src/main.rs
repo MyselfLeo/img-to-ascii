@@ -3,51 +3,12 @@ use clap::Parser;
 use std::fs::File;
 use std::io::Write;
 
+mod ascii_image;
+use ascii_image::AsciiImage;
+
 const SYMBOLS: [char; 10] = [' ', '.', ':', ';', '+', 'o', 'O', '&', '@', '█'];
 const DEFAULT_MAX_WIDTH: u32 = 100;
 
-
-
-
-/// Struct to hold and work with the ascii image
-struct AsciiImage {
-    dimensions: (u32, u32),
-    characters: Vec<char>
-}
-
-impl AsciiImage {
-
-    /// Prints the ascii image to the console
-    fn print(&self) {
-        for y in 0..self.dimensions.1 {
-            // Only drawing half of the lines to display undistorded img
-            if y % 2 == 0 {
-                for x in 0..self.dimensions.0 {
-                    print!("{}", self.characters[(x * self.dimensions.1 + y) as usize]);
-                }
-                print!("\n");
-            }
-        }
-    }
-
-    /// Return a String of the ascii image
-    fn as_string(&self) -> String {
-
-        // Generate the string
-        let mut string = String::new();
-        for y in 0..self.dimensions.1 {
-            // Only writing half of the lines to display undistorded img
-            if y % 2 == 0 {
-                for x in 0..self.dimensions.0 {
-                    string.push(self.characters[(x * self.dimensions.1 + y) as usize]);
-                }
-                string.push('\n');
-            }
-        }
-        
-        string
-    }
-}
 
 
 
@@ -114,8 +75,6 @@ struct Args {
     #[clap(short, long)]
     width: Option<u32>,
 }
-
-
 
 
 fn main() {
