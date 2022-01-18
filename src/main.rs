@@ -62,7 +62,7 @@ fn convert_file(filepath: &String, width: Option<u32>) -> AsciiImage {
 
 // Args parsing using clap
 #[derive(Parser)]
-#[clap(author = "myselfleo", version = "0.1.0", about = "A simple image to ascii converter")]
+#[clap(author = "myselfleo", version = "1.0.0", about = "A simple image to ascii converter")]
 struct Args {
     /// The path to the image to convert
     filepath: String,

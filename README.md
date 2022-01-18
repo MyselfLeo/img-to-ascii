@@ -5,7 +5,6 @@ A very small ascii art generator.
 - [x] Generates basic ASCII art based of .jpg or .png images
 - [x] Generate .txt files
 - [x] Allow to specify width
-- [ ] Allow to modulate contrast and brightness
 
 ## Install
 
